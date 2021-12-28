@@ -29,9 +29,9 @@ SECRET_KEY = 'django-insecure-&(-ee1@6yf%4py31t+k3wvi+#5iy)l(l3^@r%!sjz1zqgotn1r
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #
-DEBUG = True 
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']]
 
 
 # Application definition
@@ -39,7 +39,8 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'feed.apps.FeedConfig',
-    
+    'whitenoise.runserver_nostatic',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Add whitenoise middleware here
+   'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'sampleapp.urls'
@@ -97,6 +100,10 @@ DATABASES = {
     }
 }
 
+#
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -134,7 +141,8 @@ USE_TZ = True
 
 #STATIC_URL = 'static/'
 #static and media files
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
